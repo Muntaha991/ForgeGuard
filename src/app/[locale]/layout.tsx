@@ -33,7 +33,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${inter.variable} ${anton.variable} ${funnelDisplay.variable}`}>
-      <body className="antialiased h-[100dvh] overflow-hidden bg-[#06080b] text-[#ffffff]">
+      <body suppressHydrationWarning className="antialiased h-[100dvh] overflow-hidden bg-[#06080b] text-[#ffffff]">
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
