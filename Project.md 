@@ -1,0 +1,40 @@
+Updated User Requirements Checklist
+App Name: Personal Cyber Safety Coach
+(Built for the ISACA Orange County Sponsored Problem Challenge)
+This checklist is written in plain, everyday language so anyone (students, families, parents, part-time workers, small clubs) can understand exactly what the app should feel like and do.
+It now includes both quick Share Sheet sharing and easy in-app pasting/uploading — because great user experience means people can use whichever way feels most natural to them.
+1. Core Features – What the App MUST Do (MVP)
+I can quickly share any link or screenshot/photo of a suspicious message straight from email, SMS, WhatsApp, Instagram, or anywhere else using my phone’s normal “Share” button (Share Sheet).
+I can also open the app and paste or type things directly — just like chatting with any helpful AI:
+Paste a full email or message text
+Paste or type a link/URL
+Attach or upload a photo/screenshot of the message
+The app has a simple, friendly chat-style input bar at the bottom where I can type, paste, or add my link/email/image in one place — super easy and natural to use.
+The app instantly tells me in simple words: SafeSuspiciousHigh Risk
+The app gives me the top 3 reasons why it made that decision, written like a friendly coach (short bullet points, no jargon).
+The app shows a clear checklist of what to do next (for example: “Don’t click”, “Check with the real company”, “Turn on 2-step verification”, “Report it”).
+The app teaches me a quick 30-second micro-lesson so I learn something useful for next time.
+The app works in English and Spanish (and I can easily switch languages).
+2. Privacy & Safety – Must-Haves (Non-Functional)
+The app is privacy-first – it never saves my links, messages, or personal data on any server.
+If I accidentally share or paste a message that contains my name, email, phone number, or other private info, the app automatically hides (redacts) those details before analyzing it.
+No personal data ever leaves my phone unless I choose to create and send a report myself.
+The app has a strong safety guardrail: if I try to paste a phishing link and then ask “help me make an even better phishing message,” the app politely refuses and explains why it won’t help with anything harmful.
+3. High-Impact & Easy-to-Use Experience
+The app feels warm, encouraging, and easy — like talking to a helpful friend, not a robot.
+Anyone (even grandparents or kids) can use it without reading any instructions.
+I can choose whichever input method feels best — Share Sheet for speed or the in-app chat bar for when I want to type/paste directly — making the whole experience smooth and flexible.
+The whole process is super fast — I get my answer in just a few seconds.
+The app helps me feel safer and more confident every time I use it (real-world impact: fewer scams, less stress, less money lost).
+4. Bonus / Stretch Features (Extra Nice-to-Have)
+If the link is High Risk, the app can create a simple PDF report with all the details, risk reasons, and recommendations. I can save it or forward it to my school IT, boss, family, or friends to educate them.
+The explanations include trustworthy reference links (just like ChatGPT shows sources) so I can see where the advice comes from and trust it more.
+The app can give a confidence score (“I’m 85% sure this is risky — here’s an easy way to double-check safely”).
+Multi-language support for more languages beyond English and Spanish (stretch goal).
+5. Overall Success Goals (How We Know the App Is Great)
+A non-expert (student, parent, small club) would actually open and use this app in real life.
+The explanations are so clear that anyone can understand them and feel confident.
+The app protects my privacy and never helps bad actors.
+The app is simple enough that a university, club, or small business could easily share it with their people.
+
+

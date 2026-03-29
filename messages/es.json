@@ -1,0 +1,30 @@
+{
+  "HomePage": {
+    "title": "¿Qué puedo revisar por ti hoy?",
+    "cue1": "¿Qué quieres revisar hoy?",
+    "cue2": "Pega un texto, URL, captura de pantalla o PDF.",
+    "cue3": "Puedo ayudarte a detectar estafas, phishing y enlaces peligrosos.",
+    "loading": "ForgeGuard está buscando amenazas...",
+    "report": "Reporte de Análisis",
+    "translating": "Traduciendo resultado...",
+    "downloadPdf": "Descargar reporte en PDF",
+    "sharePdf": "Compartir reporte en PDF",
+    "input": "Tu Mensaje"
+  },
+  "RiskBadge": {
+    "safe": "Seguro: Este mensaje parece legítimo.",
+    "suspicious": "Sospechoso: Procede con precaución.",
+    "high": "Estafa Detectada: No interactúes con este mensaje.",
+    "labelSafe": "Seguro",
+    "labelSuspicious": "Sospechoso",
+    "labelHigh": "Alto Riesgo",
+    "conf": "Nivel de confianza"
+  },
+  "ActionChecklist": {
+    "whySafe": "Por qué parece seguro:",
+    "whyFlagged": "¿Por qué se marcó esto?",
+    "actionSafe": "Mejores Prácticas (Qué recordar):",
+    "actionFlagged": "Acción Recomendada (Qué hacer ahora):",
+    "lesson": "Micro lección"
+  }
+}

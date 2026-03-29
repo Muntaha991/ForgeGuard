@@ -1,0 +1,30 @@
+{
+  "HomePage": {
+    "title": "What can I check for you today?",
+    "cue1": "What do you want to check today?",
+    "cue2": "Paste a text, URL, screenshot, or PDF.",
+    "cue3": "I can help detect scams, phishing, and risky links.",
+    "loading": "ForgeGuard is scanning for threats...",
+    "report": "Analysis Report",
+    "translating": "Translating result...",
+    "downloadPdf": "Download PDF Report",
+    "sharePdf": "Share PDF Report",
+    "input": "Your Input"
+  },
+  "RiskBadge": {
+    "safe": "Safe: This message appears to be legitimate.",
+    "suspicious": "Suspicious: Proceed with caution.",
+    "high": "Scam Detected: Do not interact with this message.",
+    "labelSafe": "Safe",
+    "labelSuspicious": "Suspicious",
+    "labelHigh": "High Risk",
+    "conf": "Confidence level"
+  },
+  "ActionChecklist": {
+    "whySafe": "Why this looks safe:",
+    "whyFlagged": "Why is this flagged?",
+    "actionSafe": "Best Practices (What to remember):",
+    "actionFlagged": "Recommended Action (What to do next):",
+    "lesson": "Micro lesson"
+  }
+}

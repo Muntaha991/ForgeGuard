@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-funnel), var(--font-anton), sans-serif;
+  --font-display: var(--font-funnel);
+  --font-mobile: var(--font-anton);
+}
+
+:root {
+  /* Borders */
+  --md: 0.5rem;
+  --lg: 0.75rem;
+  --xl: 1rem;
+  --2xl: 1.25rem;
+  --3xl: 1.5rem;
+  --full: 624.9375rem;
+
+  /* Semantics : Dark */
+  --feedback-error: #ef4444; 
+  --feedback-info: #60a5fa; 
+  --feedback-success: #4ade80; 
+  --on-surface-default: #ffffff;
+  --on-surface-inverse: #ffffff;
+  --on-surface-primary: #ebeefe;
+  --on-surface-variant: #d4d4d8;
+  --outline-bright: #27272a;
+  --outline-default: #27272a;
+  --outline-focused: #60a5fa;
+  --outline-subtle: #09090b;
+  --surface-default: #030408;
+  --surface-intense: #06080b;
+  --surface-container-default: #09090b;
+  --surface-container-high: #18181b;
+  --surface-container-low: #000000;
+  --surface-container-lowest: #06080b;
+  --surface-container-primary: #3b82f6;
+  --surface-container-primary-2: #8b5cf6;
+  --surface-container-primary-subtle: #1e3a8a;
+  --transparent-primary: #3357f83d;
+  --transparent-surface: #06080b00;
+  --transparent-surface-40: #06080bcc;
+
+  /* Spacing */
+  --p-0: 0rem;
+  --p-2: 0.125rem;
+  --p-4: 0.25rem;
+  --p-8: 0.5rem;
+  --p-12: 0.75rem;
+  --p-16: 1rem;
+  --p-20: 1.25rem;
+  --p-24: 1.5rem;
+  --p-32: 2rem;
+  --p-40: 2.5rem;
+  --p-64: 4rem;
+
+  /* Primitives */
+  --black: #06080b;
+  --blue-blue-50: #ebeefe;
+  --blue-blue-700: #243eb0;
+  --violet-violet-100: #dbccfc;
+  --violet-violet-200: #cab4fb;
+  --main-black: #030408;
+  --main-white: #ffffff;
+}
+
+@layer base {
+  body {
+    @apply bg-[#06080b] text-[#ffffff] antialiased min-h-screen font-sans;
+  }
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
