@@ -70,8 +70,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <h2 className="text-2xl font-bold text-white mb-2 leading-tight">
               Create your free account today.
             </h2>
-            <p className="text-blue-200/60 mb-8">
-              Join thousands protecting their data and finances with our AI-powered safety coach.
+            <p className="text-blue-200/60 mb-8">Navigate your messages with confidence. Let our AI spot the threats so you don't have to.
+              
             </p>
 
             <ul className="space-y-5">

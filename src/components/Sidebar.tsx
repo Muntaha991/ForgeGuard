@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, FileText, HelpCircle, Settings, PhoneIcon as Headphones, User, X, BookOpen, AlertTriangle, Zap } from 'lucide-react';
+import { Plus, FileText, Settings, X, BookOpen, AlertTriangle, Zap, LogIn } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAppStore } from '@/store/appStore';
-import AuthModal from './AuthModal';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import { useUserTier } from '@/hooks/useUserTier';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -17,7 +18,8 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const { isLoggedIn, userProfile, userTier, login, logout, setTier, locale, setLocale } = useAppStore();
+  const { userTier, user, isPro } = useUserTier();
+  const { locale, setLocale } = useAppStore();
 
   // Helper to extract current locale (e.g., 'en' or 'es')
   const currentLocale = pathname?.split('/')[1] || 'en';
@@ -42,16 +44,22 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
 
   return (
     <>
-    <AuthModal isOpen={activeModal === 'Auth'} onClose={() => setActiveModal(null)} />
     <AnimatePresence initial={false}>
-      {/* Dynamic Overlay Modal for Settings, Support, and User Profile */}
+      {/* Dynamic Overlay Modal for Settings, Upgrade, and User Profile */}
       {activeModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div
+          key={`overlay-modal-${activeModal}`}
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        >
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-[#111111] border border-white/10 rounded-2xl w-full max-w-md p-6 relative shadow-2xl"
+            className={`relative w-full shadow-2xl ${
+              activeModal === 'Upgrade to Pro'
+                ? 'max-w-5xl rounded-3xl border border-[#44D6FF]/30 bg-gradient-to-br from-white/[0.10] via-white/[0.06] to-white/[0.04] backdrop-blur-2xl p-7 md:p-10'
+                : 'max-w-md rounded-2xl border border-white/10 bg-[#111111] p-6'
+            }`}
           >
             <button 
               onClick={() => setActiveModal(null)} 
@@ -59,28 +67,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
             >
               <X size={20} />
             </button>
-            {activeModal === 'Account' ? (
-              <>
-                <h2 className="text-xl font-bold text-white tracking-tight mb-2">
-                  {isLoggedIn ? 'Your Profile' : 'Guest Account'}
-                </h2>
-                <div className="text-white/70 text-sm mb-6">
-                    <div className="flex flex-col gap-1 p-3 bg-white/5 rounded-lg border border-white/10">
-                      <span className="font-medium text-white">{userProfile?.name}</span>
-                      <span>{userProfile?.email}</span>
-                      <span className={`text-xs font-medium mt-1 ${userTier === 'Pro' ? 'text-purple-400' : 'text-[#3357f8]'}`}>
-                        {userTier} Tier Active
-                      </span>
-                    </div>
-                </div>
-                <button 
-                  onClick={() => { logout(); setActiveModal(null); }}
-                  className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 py-2.5 rounded-lg font-medium transition-colors"
-                >
-                  Log Out
-                </button>
-              </>
-            ) : activeModal === 'Settings' ? (
+            {activeModal === 'Settings' ? (
               <>
                 <h2 className="text-xl font-bold text-white tracking-tight mb-4">
                   Settings
@@ -109,28 +96,75 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                   Close
                 </button>
               </>
-            ) : (
+            ) : activeModal === 'Upgrade to Pro' ? (
               <>
-                <h2 className="text-xl font-bold text-white tracking-tight mb-2">
-                  {activeModal}
-                </h2>
-                <p className="text-white/70 text-sm mb-6">
-                  This feature is currently under active development. Stay tuned!
-                </p>
-                <button 
-                  onClick={() => setActiveModal(null)}
-                  className="w-full bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg font-medium transition-colors"
-                >
-                  Close
-                </button>
+                <div className="mb-7 pr-8">
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
+                    Pricing & Features
+                  </h2>
+                  <p className="text-sm md:text-base text-white/70 mt-2">
+                    Pick the plan that matches your protection needs. Upgrade anytime.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="rounded-2xl border border-white/15 bg-black/35 p-6 backdrop-blur-xl">
+                    <p className="text-white/70 text-sm font-medium uppercase tracking-[0.12em] mb-2">Basic</p>
+                    <div className="flex items-end gap-2 mb-5">
+                      <span className="text-4xl font-bold text-white">$0</span>
+                    </div>
+                    <ul className="space-y-3 text-sm text-white/80">
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-white/60" />
+                        Instant scam detection
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-white/60" />
+                        Private, untracked scans
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border border-[#44D6FF]/70 bg-[#44D6FF]/10 p-6 backdrop-blur-xl shadow-[0_0_35px_rgba(68,214,255,0.18)]">
+                    <p className="text-[#7BE5FF] text-sm font-semibold uppercase tracking-[0.12em] mb-2">ForgeGuard Pro</p>
+                    <div className="flex items-end gap-2 mb-5">
+                      <span className="text-4xl font-bold text-white">$4.99</span>
+                      <span className="text-white/70 mb-1">/mo</span>
+                    </div>
+                    <ul className="space-y-3 text-sm text-white/90 mb-6">
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
+                        Unlimited daily scans
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
+                        Full Security Analytics dashboard
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
+                        Targeted PII attack detection
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
+                        Priority processing
+                      </li>
+                    </ul>
+                    <button
+                      type="button"
+                      className="w-full rounded-xl bg-[#44D6FF] px-4 py-3 text-sm font-bold text-[#02131A] shadow-[0_0_25px_rgba(68,214,255,0.45)] transition-all hover:scale-[1.01] hover:shadow-[0_0_35px_rgba(68,214,255,0.6)]"
+                    >
+                      Subscribe Now
+                    </button>
+                  </div>
+                </div>
               </>
-            )}
+            ) : null}
           </motion.div>
         </div>
       )}
 
       {isOpen && (
-        <>
+        <Fragment key="sidebar-open">
           {/* Mobile Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -197,12 +231,12 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
 
             {/* Footer Buttons */}
             <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-1">
-              {userTier !== 'Pro' && (
+              {!isPro && (
                 <button 
                   onClick={() => openModal('Upgrade to Pro')}
-                  className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-purple-500/10 text-purple-400 hover:text-purple-300 transition-colors text-sm font-bold mb-2 bg-white/[0.02] border border-white/5"
+                  className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg bg-white/[0.02] border border-[#44D6FF]/30 text-[#44D6FF] hover:text-[#7BE5FF] hover:bg-[#44D6FF]/10 hover:shadow-[0_0_20px_rgba(68,214,255,0.25)] transition-all text-sm font-bold mb-2"
                 >
-                  <Zap size={18} className="fill-purple-400/20" />
+                  <Zap size={18} className="fill-[#44D6FF]/25" />
                   Upgrade to Pro
                 </button>
               )}
@@ -215,29 +249,46 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
               </button>
               <button 
                 onClick={() => handleNavigation('/emergency')}
-                className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-red-500/10 text-red-500 hover:text-red-400 transition-colors text-sm font-medium"
+                className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-white/5 text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 <AlertTriangle size={18} />
                 Emergency Help
               </button>
               
               <div className="h-px bg-white/5 my-2 mx-3" />
-              
-              <button 
-                onClick={() => openModal(isLoggedIn ? 'Account' : 'Auth')}
-                className="w-full flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-white/5 text-white/90 transition-colors text-sm font-medium mt-1 mb-2"
-              >
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                  <User size={16} className="text-white/50" />
+
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-[#44D6FF]/15 border border-white/10 hover:border-[#44D6FF]/40 text-white/90 hover:text-[#7BE5FF] transition-colors text-sm font-semibold mt-1 mb-2"
+                  >
+                    <LogIn size={16} />
+                    Sign In
+                  </button>
+                </SignInButton>
+              </SignedOut>
+
+              <SignedIn>
+                <div className="w-full flex items-center gap-3 py-2 px-3 rounded-lg bg-white/5 border border-white/10 mt-1 mb-2">
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        avatarBox: 'h-8 w-8',
+                        userButtonTrigger: 'focus:shadow-none',
+                      },
+                    }}
+                  />
+                  <div className="min-w-0 flex flex-col">
+                    <span className="truncate text-sm font-semibold text-white">
+                      {user?.fullName || user?.firstName || user?.username || 'User'}
+                    </span>
+                    <span className="text-xs text-white/60">{userTier} Tier</span>
+                  </div>
                 </div>
-                <div className="flex flex-col items-start truncate overflow-hidden">
-                  <span className="truncate w-full">{isLoggedIn ? userProfile?.name : 'Guest Mode'}</span>
-                  {isLoggedIn && <span className="text-xs text-white/50 truncate w-full">{userProfile?.email}</span>}
-                </div>
-              </button>
+              </SignedIn>
             </div>
           </motion.div>
-        </>
+        </Fragment>
       )}
     </AnimatePresence>
     </>
