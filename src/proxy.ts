@@ -1,6 +1,6 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 import createIntlMiddleware from 'next-intl/middleware';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
 const intlMiddleware = createIntlMiddleware({
   locales: ['en', 'es'],
@@ -16,8 +16,8 @@ const handler = clerkMiddleware(async (_auth, req) => {
 });
 
 // Keep core app routes public to support Guest Mode.
-export function proxy(req: NextRequest) {
-  return handler(req);
+export function proxy(req: NextRequest, event: NextFetchEvent) {
+  return handler(req, event);
 }
 
 export default handler;
