@@ -21,7 +21,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
   const t = useTranslations('Sidebar');
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [isUpgradingTier, setIsUpgradingTier] = useState(false);
-  const { userTier, user, isPro } = useUserTier();
+  const { tier: userTier, user, isPro } = useUserTier();
   const { locale, setLocale } = useAppStore();
 
   // Helper to extract current locale (e.g., 'en' or 'es')
