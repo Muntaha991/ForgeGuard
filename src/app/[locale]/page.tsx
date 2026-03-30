@@ -11,6 +11,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { downloadReportAsPDF } from '@/lib/utils/pdfDownloader';
 import { Capacitor } from '@capacitor/core';
+import { useScanHistory } from '@/hooks/useScanHistory';
 
 type AnalysisResult = {
   risk: RiskLevel;
@@ -72,6 +73,7 @@ export default function Home() {
   const [typedTitle, setTypedTitle] = useState('');
   const [titlePhraseIndex, setTitlePhraseIndex] = useState(0);
   const [isDeletingTitle, setIsDeletingTitle] = useState(false);
+  const { addScan } = useScanHistory();
 
   const titlePhrases = [
     t('cue1'),
@@ -137,7 +139,9 @@ export default function Home() {
         body: JSON.stringify({ ...payload, locale: targetLocale }),
       });
       if (!response.ok) throw new Error('Analysis failed.');
-      setResult(await response.json());
+      const scanResult = await response.json();
+      setResult(scanResult);
+      addScan(scanResult);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || 'Error occurred');
