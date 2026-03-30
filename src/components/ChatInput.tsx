@@ -25,6 +25,7 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   const t = useTranslations('ChatInput');
+  type OcrWorker = Awaited<ReturnType<typeof Tesseract.createWorker>>;
   const OCR_WORKER_PATH = 'https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/worker.min.js';
   const OCR_LANG_PATH = 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int';
   const OCR_CORE_PATH = 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v7.0.0';
@@ -35,8 +36,8 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const ocrWorkerRef = useRef<Tesseract.Worker | null>(null);
-  const ocrWorkerInitRef = useRef<Promise<Tesseract.Worker> | null>(null);
+  const ocrWorkerRef = useRef<OcrWorker | null>(null);
+  const ocrWorkerInitRef = useRef<Promise<OcrWorker> | null>(null);
 
   const getOrInitOcrWorker = () => {
     if (ocrWorkerRef.current) return Promise.resolve(ocrWorkerRef.current);
