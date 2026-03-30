@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { Send, Plus, ShieldAlert, FileText, File as FileIcon, X } from 'lucide-react';
-import { createWorker, type Worker } from 'tesseract.js';
+import Tesseract from 'tesseract.js';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { redactPIIWithFlag } from '@/lib/utils/redactor';
@@ -35,14 +35,14 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const ocrWorkerRef = useRef<Worker | null>(null);
-  const ocrWorkerInitRef = useRef<Promise<Worker> | null>(null);
+  const ocrWorkerRef = useRef<Tesseract.Worker | null>(null);
+  const ocrWorkerInitRef = useRef<Promise<Tesseract.Worker> | null>(null);
 
   const getOrInitOcrWorker = () => {
     if (ocrWorkerRef.current) return Promise.resolve(ocrWorkerRef.current);
     if (ocrWorkerInitRef.current) return ocrWorkerInitRef.current;
 
-    ocrWorkerInitRef.current = createWorker('eng', 1, {
+    ocrWorkerInitRef.current = Tesseract.createWorker('eng', 1, {
       workerPath: OCR_WORKER_PATH,
       langPath: OCR_LANG_PATH,
       corePath: OCR_CORE_PATH,
