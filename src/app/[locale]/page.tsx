@@ -37,10 +37,7 @@ const VIEW_STATE_KEY = 'forgeguard:view-state';
 const SKIP_LOCALE_SWITCH_MOTION_KEY = 'forgeguard:skip-locale-switch-motion';
 
 export default function Home() {
-  const [disableMotion, setDisableMotion] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return sessionStorage.getItem(SKIP_LOCALE_SWITCH_MOTION_KEY) === '1';
-  });
+  const [disableMotion, setDisableMotion] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -81,6 +78,10 @@ export default function Home() {
     t('cue3'),
   ];
   const shouldAnimate = !disableMotion;
+
+  useEffect(() => {
+    setDisableMotion(sessionStorage.getItem(SKIP_LOCALE_SWITCH_MOTION_KEY) === '1');
+  }, []);
 
   useEffect(() => {
     if (!disableMotion) return;

@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAppStore } from '@/store/appStore';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { useUserTier } from '@/hooks/useUserTier';
+import { useTranslations } from 'next-intl';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations('Sidebar');
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [isUpgradingTier, setIsUpgradingTier] = useState(false);
   const { userTier, user, isPro } = useUserTier();
@@ -96,10 +98,10 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
             {activeModal === 'Settings' ? (
               <>
                 <h2 className="text-xl font-bold text-white tracking-tight mb-4">
-                  Settings
+                  {t('settings')}
                 </h2>
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-white/70 mb-2">Language</label>
+                  <label className="block text-sm font-medium text-white/70 mb-2">{t('language')}</label>
                   <select 
                     value={locale} 
                     onChange={(e) => {
@@ -111,48 +113,48 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                     }}
                     className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 transition-colors"
                   >
-                    <option value="en">English (en)</option>
-                    <option value="es">Español (es)</option>
+                    <option value="en">{t('languageEnglish')}</option>
+                    <option value="es">{t('languageSpanish')}</option>
                   </select>
                 </div>
                 <button 
                   onClick={() => setActiveModal(null)}
                   className="w-full bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-lg font-medium transition-colors"
                 >
-                  Close
+                  {t('close')}
                 </button>
               </>
             ) : activeModal === 'Upgrade to Pro' ? (
               <>
                 <div className="mb-7 pr-8">
                   <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
-                    Pricing & Features
+                    {t('pricingTitle')}
                   </h2>
                   <p className="text-sm md:text-base text-white/70 mt-2">
-                    Pick the plan that matches your protection needs. Upgrade anytime.
+                    {t('pricingSubtitle')}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="rounded-2xl border border-white/15 bg-black/35 p-6 backdrop-blur-xl">
-                    <p className="text-white/70 text-sm font-medium uppercase tracking-[0.12em] mb-2">Basic</p>
+                    <p className="text-white/70 text-sm font-medium uppercase tracking-[0.12em] mb-2">{t('basicPlan')}</p>
                     <div className="flex items-end gap-2 mb-5">
                       <span className="text-4xl font-bold text-white">$0</span>
                     </div>
                     <ul className="space-y-3 text-sm text-white/80">
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-white/60" />
-                        Instant scam detection
+                        {t('basicFeature1')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-white/60" />
-                        Private, untracked scans
+                        {t('basicFeature2')}
                       </li>
                     </ul>
                   </div>
 
                   <div className="rounded-2xl border border-[#44D6FF]/70 bg-[#44D6FF]/10 p-6 backdrop-blur-xl shadow-[0_0_35px_rgba(68,214,255,0.18)]">
-                    <p className="text-[#7BE5FF] text-sm font-semibold uppercase tracking-[0.12em] mb-2">ForgeGuard Pro</p>
+                    <p className="text-[#7BE5FF] text-sm font-semibold uppercase tracking-[0.12em] mb-2">{t('proPlan')}</p>
                     <div className="flex items-end gap-2 mb-5">
                       <span className="text-4xl font-bold text-white">$4.99</span>
                       <span className="text-white/70 mb-1">/mo</span>
@@ -160,19 +162,19 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                     <ul className="space-y-3 text-sm text-white/90 mb-6">
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
-                        Unlimited daily scans
+                        {t('proFeature1')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
-                        Full Security Analytics dashboard
+                        {t('proFeature2')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
-                        Targeted PII attack detection
+                        {t('proFeature3')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-[#44D6FF]" />
-                        Priority processing
+                        {t('proFeature4')}
                       </li>
                     </ul>
                     <SignedOut>
@@ -181,7 +183,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                           type="button"
                           className="w-full rounded-xl bg-[#44D6FF] px-4 py-3 text-sm font-bold text-[#02131A] shadow-[0_0_25px_rgba(68,214,255,0.45)] transition-all hover:scale-[1.01] hover:shadow-[0_0_35px_rgba(68,214,255,0.6)]"
                         >
-                          Sign In to Subscribe
+                          {t('signInToSubscribe')}
                         </button>
                       </SignInButton>
                     </SignedOut>
@@ -195,10 +197,10 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                         {isUpgradingTier ? (
                           <>
                             <Loader2 size={16} className="animate-spin" />
-                            Activating Pro...
+                            {t('activatingPro')}
                           </>
                         ) : (
-                          'Subscribe Now'
+                          t('subscribeNow')
                         )}
                       </button>
                     </SignedIn>
@@ -254,7 +256,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                 className="w-full flex items-center gap-2 bg-[#3357f8] hover:bg-[#243eb0] text-white py-3 px-4 rounded-xl transition-colors font-medium text-sm shadow-lg shadow-blue-900/20"
               >
                 <Plus size={18} />
-                New chat
+                {t('newChat')}
               </button>
             </div>
 
@@ -265,14 +267,14 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                 className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-white/5 text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 <FileText size={18} />
-                Security Analytics
+                {t('securityAnalytics')}
               </button>
               <button 
                 onClick={() => handleNavigation('/glossary')}
                 className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-white/5 text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 <BookOpen size={18} />
-                Scam Glossary
+                {t('scamGlossary')}
               </button>
             </div>
 
@@ -284,7 +286,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                   className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg bg-white/[0.02] border border-[#44D6FF]/30 text-[#44D6FF] hover:text-[#7BE5FF] hover:bg-[#44D6FF]/10 hover:shadow-[0_0_20px_rgba(68,214,255,0.25)] transition-all text-sm font-bold mb-2"
                 >
                   <Zap size={18} className="fill-[#44D6FF]/25" />
-                  Upgrade to Pro
+                  {t('upgradeToPro')}
                 </button>
               )}
               <button 
@@ -292,14 +294,14 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                 className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-white/5 text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 <Settings size={18} />
-                Settings
+                {t('settings')}
               </button>
               <button 
                 onClick={() => handleNavigation('/emergency')}
                 className="w-full flex items-center gap-3 py-2.5 px-3 rounded-lg hover:bg-white/5 text-white/70 hover:text-white transition-colors text-sm font-medium"
               >
                 <AlertTriangle size={18} />
-                Emergency Help
+                {t('emergencyHelp')}
               </button>
               
               <div className="h-px bg-white/5 my-2 mx-3" />
@@ -310,7 +312,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                     className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-[#44D6FF]/15 border border-white/10 hover:border-[#44D6FF]/40 text-white/90 hover:text-[#7BE5FF] transition-colors text-sm font-semibold mt-1 mb-2"
                   >
                     <LogIn size={16} />
-                    Sign In
+                    {t('signIn')}
                   </button>
                 </SignInButton>
               </SignedOut>
@@ -327,9 +329,9 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                   />
                   <div className="min-w-0 flex flex-col">
                     <span className="truncate text-sm font-semibold text-white">
-                      {user?.fullName || user?.firstName || user?.username || 'User'}
+                      {user?.fullName || user?.firstName || user?.username || t('userFallback')}
                     </span>
-                    <span className="text-xs text-white/60">{userTier} Tier</span>
+                    <span className="text-xs text-white/60">{userTier} {t('tier')}</span>
                   </div>
                 </div>
               </SignedIn>

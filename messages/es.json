@@ -26,5 +26,39 @@
     "actionSafe": "Mejores Prácticas (Qué recordar):",
     "actionFlagged": "Acción Recomendada (Qué hacer ahora):",
     "lesson": "Micro lección"
+  },
+  "Sidebar": {
+    "newChat": "Nuevo chat",
+    "securityAnalytics": "Analítica de Seguridad",
+    "scamGlossary": "Glosario de Estafas",
+    "upgradeToPro": "Mejorar a Pro",
+    "settings": "Configuración",
+    "emergencyHelp": "Ayuda de Emergencia",
+    "signIn": "Iniciar sesión",
+    "userFallback": "Usuario",
+    "tier": "Nivel",
+    "language": "Idioma",
+    "languageEnglish": "English (en)",
+    "languageSpanish": "Español (es)",
+    "close": "Cerrar",
+    "pricingTitle": "Precios y Funciones",
+    "pricingSubtitle": "Elige el plan que mejor se adapte a tu protección. Mejora cuando quieras.",
+    "basicPlan": "Básico",
+    "basicFeature1": "Detección instantánea de estafas",
+    "basicFeature2": "Escaneos privados y sin rastreo",
+    "proPlan": "ForgeGuard Pro",
+    "proFeature1": "Escaneos diarios ilimitados",
+    "proFeature2": "Panel completo de Analítica de Seguridad",
+    "proFeature3": "Detección de ataques dirigidos de PII",
+    "proFeature4": "Procesamiento prioritario",
+    "signInToSubscribe": "Inicia sesión para suscribirte",
+    "activatingPro": "Activando Pro...",
+    "subscribeNow": "Suscribirse ahora"
+  },
+  "ChatInput": {
+    "askForgeGuard": "Pregunta a ForgeGuard...",
+    "addMessage": "Agrega un mensaje...",
+    "ocrRunning": "Extrayendo texto OCR de la imagen...",
+    "fileTooLarge": "El archivo es demasiado grande. Selecciona uno menor a 5MB."
   }
 }

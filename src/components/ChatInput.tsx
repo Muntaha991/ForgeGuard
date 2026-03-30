@@ -5,6 +5,7 @@ import Tesseract from 'tesseract.js';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { redactPIIWithFlag } from '@/lib/utils/redactor';
+import { useTranslations } from 'next-intl';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,6 +24,7 @@ interface ChatInputProps {
 }
 
 export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
+  const t = useTranslations('ChatInput');
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState<{ url: string, type: 'image' | 'pdf', name: string } | null>(null);
   const [isOcrRunning, setIsOcrRunning] = useState(false);
@@ -46,7 +48,7 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   }, [inputText]);
 
   const processFile = (file: File) => {
-    if (file.size > 5 * 1024 * 1024) return alert("File too large. Please select under 5MB.");
+    if (file.size > 5 * 1024 * 1024) return alert(t('fileTooLarge'));
     
     const isImage = file.type.startsWith('image/');
     const isPdf = file.type === 'application/pdf';
@@ -200,7 +202,7 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
             ref={textareaRef}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={selectedFile ? "Add a message..." : "Ask ForgeGuard..."}
+            placeholder={selectedFile ? t('addMessage') : t('askForgeGuard')}
             disabled={isLoading}
             rows={1}
             className="flex-1 bg-transparent text-white placeholder-white/40 outline-none text-[15px] font-medium min-w-0 resize-none py-2 max-h-[200px] overflow-y-auto leading-[24px]"
@@ -235,7 +237,7 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
       
       {isOcrRunning && (
         <div className="absolute top-full mt-2 w-full text-center text-xs text-blue-400 animate-pulse font-medium tracking-wide">
-          Running OCR Extraction on Image...
+          {t('ocrRunning')}
         </div>
       )}
     </div>

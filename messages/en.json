@@ -26,5 +26,39 @@
     "actionSafe": "Best Practices (What to remember):",
     "actionFlagged": "Recommended Action (What to do next):",
     "lesson": "Micro lesson"
+  },
+  "Sidebar": {
+    "newChat": "New chat",
+    "securityAnalytics": "Security Analytics",
+    "scamGlossary": "Scam Glossary",
+    "upgradeToPro": "Upgrade to Pro",
+    "settings": "Settings",
+    "emergencyHelp": "Emergency Help",
+    "signIn": "Sign In",
+    "userFallback": "User",
+    "tier": "Tier",
+    "language": "Language",
+    "languageEnglish": "English (en)",
+    "languageSpanish": "Español (es)",
+    "close": "Close",
+    "pricingTitle": "Pricing & Features",
+    "pricingSubtitle": "Pick the plan that matches your protection needs. Upgrade anytime.",
+    "basicPlan": "Basic",
+    "basicFeature1": "Instant scam detection",
+    "basicFeature2": "Private, untracked scans",
+    "proPlan": "ForgeGuard Pro",
+    "proFeature1": "Unlimited daily scans",
+    "proFeature2": "Full Security Analytics dashboard",
+    "proFeature3": "Targeted PII attack detection",
+    "proFeature4": "Priority processing",
+    "signInToSubscribe": "Sign In to Subscribe",
+    "activatingPro": "Activating Pro...",
+    "subscribeNow": "Subscribe Now"
+  },
+  "ChatInput": {
+    "askForgeGuard": "Ask ForgeGuard...",
+    "addMessage": "Add a message...",
+    "ocrRunning": "Running OCR Extraction on Image...",
+    "fileTooLarge": "File too large. Please select under 5MB."
   }
 }
