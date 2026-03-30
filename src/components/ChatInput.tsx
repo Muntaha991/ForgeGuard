@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { Send, Plus, ShieldAlert, FileText, File as FileIcon, X } from 'lucide-react';
-import Tesseract from 'tesseract.js';
+import { createWorker, type Worker } from 'tesseract.js';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { redactPIIWithFlag } from '@/lib/utils/redactor';
@@ -25,6 +25,9 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   const t = useTranslations('ChatInput');
+  const OCR_WORKER_PATH = 'https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/worker.min.js';
+  const OCR_LANG_PATH = 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int';
+  const OCR_CORE_PATH = 'https://cdn.jsdelivr.net/npm/tesseract.js-core@v7.0.0';
   const [inputText, setInputText] = useState('');
   const [selectedFile, setSelectedFile] = useState<{ url: string, type: 'image' | 'pdf', name: string } | null>(null);
   const [isOcrRunning, setIsOcrRunning] = useState(false);
@@ -32,6 +35,29 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const ocrWorkerRef = useRef<Worker | null>(null);
+  const ocrWorkerInitRef = useRef<Promise<Worker> | null>(null);
+
+  const getOrInitOcrWorker = () => {
+    if (ocrWorkerRef.current) return Promise.resolve(ocrWorkerRef.current);
+    if (ocrWorkerInitRef.current) return ocrWorkerInitRef.current;
+
+    ocrWorkerInitRef.current = createWorker('eng', 1, {
+      workerPath: OCR_WORKER_PATH,
+      langPath: OCR_LANG_PATH,
+      corePath: OCR_CORE_PATH,
+    })
+      .then((worker) => {
+        ocrWorkerRef.current = worker;
+        return worker;
+      })
+      .catch((error) => {
+        ocrWorkerInitRef.current = null;
+        throw error;
+      });
+
+    return ocrWorkerInitRef.current;
+  };
 
   // Auto-resize textarea
   const handleInput = () => {
@@ -46,6 +72,26 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
   useEffect(() => {
     handleInput(); // Resize on mount or when text changes
   }, [inputText]);
+
+  useEffect(() => {
+    let isMounted = true;
+    void getOrInitOcrWorker().catch((error) => {
+      if (!isMounted) return;
+      console.error('Failed to preload OCR worker:', error);
+    });
+
+    return () => {
+      isMounted = false;
+      const worker = ocrWorkerRef.current;
+      ocrWorkerRef.current = null;
+      ocrWorkerInitRef.current = null;
+      if (worker) {
+        void worker.terminate().catch((error) => {
+          console.error('Failed to terminate OCR worker:', error);
+        });
+      }
+    };
+  }, []);
 
   const processFile = (file: File) => {
     if (file.size > 5 * 1024 * 1024) return alert(t('fileTooLarge'));
@@ -101,7 +147,8 @@ export default function ChatInput({ onSend, isLoading }: ChatInputProps) {
       if (selectedFile.type === 'image') {
         setIsOcrRunning(true);
         try {
-          const result = await Tesseract.recognize(selectedFile.url, 'eng');
+          const worker = await getOrInitOcrWorker();
+          const result = await worker.recognize(selectedFile.url);
           const { text: ocrText, wasRedacted: ocrRedacted } = redactPIIWithFlag(result.data.text);
           onSend({ type: 'image', content: selectedFile.url, contentStr: ocrText, wasRedacted: wasRedacted || ocrRedacted });
         } catch (e) {
