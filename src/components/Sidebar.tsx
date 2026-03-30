@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, FileText, Settings, X, BookOpen, AlertTriangle, Zap, LogIn } from 'lucide-react';
+import { Plus, FileText, Settings, X, BookOpen, AlertTriangle, Zap, LogIn, Loader2 } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAppStore } from '@/store/appStore';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
@@ -18,6 +18,7 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [isUpgradingTier, setIsUpgradingTier] = useState(false);
   const { userTier, user, isPro } = useUserTier();
   const { locale, setLocale } = useAppStore();
 
@@ -40,6 +41,31 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
   const openModal = (modalName: string) => {
     setActiveModal(modalName);
     if (window.innerWidth < 768) onClose();
+  };
+
+  const handleSubscribeNow = async () => {
+    if (!user || isUpgradingTier) return;
+
+    setIsUpgradingTier(true);
+    try {
+      const response = await fetch('/api/account/tier', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: 'pro' }),
+      });
+
+      if (!response.ok) {
+        const errorPayload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(errorPayload?.error || 'Unable to activate Pro tier.');
+      }
+
+      await user.reload();
+      setActiveModal(null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpgradingTier(false);
+    }
   };
 
   return (
@@ -149,12 +175,33 @@ export default function Sidebar({ isOpen, onClose, onNewChat }: SidebarProps) {
                         Priority processing
                       </li>
                     </ul>
-                    <button
-                      type="button"
-                      className="w-full rounded-xl bg-[#44D6FF] px-4 py-3 text-sm font-bold text-[#02131A] shadow-[0_0_25px_rgba(68,214,255,0.45)] transition-all hover:scale-[1.01] hover:shadow-[0_0_35px_rgba(68,214,255,0.6)]"
-                    >
-                      Subscribe Now
-                    </button>
+                    <SignedOut>
+                      <SignInButton mode="modal">
+                        <button
+                          type="button"
+                          className="w-full rounded-xl bg-[#44D6FF] px-4 py-3 text-sm font-bold text-[#02131A] shadow-[0_0_25px_rgba(68,214,255,0.45)] transition-all hover:scale-[1.01] hover:shadow-[0_0_35px_rgba(68,214,255,0.6)]"
+                        >
+                          Sign In to Subscribe
+                        </button>
+                      </SignInButton>
+                    </SignedOut>
+                    <SignedIn>
+                      <button
+                        type="button"
+                        onClick={handleSubscribeNow}
+                        disabled={isUpgradingTier}
+                        className="w-full rounded-xl bg-[#44D6FF] px-4 py-3 text-sm font-bold text-[#02131A] shadow-[0_0_25px_rgba(68,214,255,0.45)] transition-all hover:scale-[1.01] hover:shadow-[0_0_35px_rgba(68,214,255,0.6)] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100 disabled:hover:shadow-[0_0_25px_rgba(68,214,255,0.45)] flex items-center justify-center gap-2"
+                      >
+                        {isUpgradingTier ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin" />
+                            Activating Pro...
+                          </>
+                        ) : (
+                          'Subscribe Now'
+                        )}
+                      </button>
+                    </SignedIn>
                   </div>
                 </div>
               </>

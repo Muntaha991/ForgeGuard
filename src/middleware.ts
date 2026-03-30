@@ -1,5 +1,6 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 import createIntlMiddleware from 'next-intl/middleware';
+import { NextResponse } from 'next/server';
 
 const intlMiddleware = createIntlMiddleware({
   locales: ['en', 'es'],
@@ -8,9 +9,13 @@ const intlMiddleware = createIntlMiddleware({
 
 // Keep core app routes public to support Guest Mode.
 export default clerkMiddleware(async (_auth, req) => {
+  if (req.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
   return intlMiddleware(req);
 });
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
 };

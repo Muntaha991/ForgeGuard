@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShieldAlert, CreditCard, LockKeyhole, PhoneCall, ChevronDown, CheckCircle, Search, UserCircle2, Briefcase, Mail } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, ChevronDown, CheckCircle, Search, UserCircle2, Briefcase, Mail, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -11,31 +11,21 @@ export default function EmergencyPage() {
   
   // Default the first accordion immediately to open
   const [activeTab, setActiveTab] = useState<number | null>(0);
+  const [location, setLocation] = useState('Santa Ana, CA');
+  const [professionalQuery, setProfessionalQuery] = useState('');
 
-  const checklist = [
+  const scenarios = [
     {
-      title: 'Contact your bank immediately',
-      icon: PhoneCall,
-      description: 'If you shared banking details or authorized a payment, call the number on the back of your credit/debit card immediately. Inform them your account may be compromised and ask to freeze unauthorized transactions.',
-      action: 'Call the official number on the back of your card.'
+      title: 'I clicked a suspicious link or downloaded a file',
+      content: 'Immediately disconnect your device from the internet (turn on Airplane mode or unplug the ethernet cable) to stop malware from communicating with the attacker. Run a full system antivirus scan.'
     },
     {
-      title: 'Change your passwords',
-      icon: LockKeyhole,
-      description: 'If you entered a password on a suspicious site, change that password immediately. Crucially, if you use that same password anywhere else (especially for email or banking), change it there too.',
-      action: 'Enable Two-Factor Authentication (2FA) wherever possible.'
+      title: 'I shared my banking details or noticed weird charges',
+      content: 'Call the official number on the back of your bank card immediately to freeze your account. Do not use phone numbers provided in suspicious emails.'
     },
     {
-      title: 'Freeze your credit',
-      icon: CreditCard,
-      description: 'If you provided your Social Security Number, ID, or significant personal information, scammers may try to open accounts in your name. Contact Equifax, Experian, and TransUnion to place a free security freeze on your credit report.',
-      action: 'Visit IdentityTheft.gov for official guidance.'
-    },
-    {
-      title: 'Run an antivirus scan',
-      icon: ShieldAlert,
-      description: 'If you downloaded an attachment or software, disconnect your device from the internet (turn off Wi-Fi/unplug the cable) and run a full system scan using reputable antivirus software.',
-      action: 'Do not log into banking or email until the machine is clean.'
+      title: 'I gave away my password',
+      content: 'Log in from a safe, separate device and change your password immediately. Enable Two-Factor Authentication (2FA) on that account and any other accounts using the same password.'
     }
   ];
 
@@ -46,7 +36,8 @@ export default function EmergencyPage() {
       title: "Senior Cybersecurity Consultant",
       specialty: "Device Forensics & Malware Removal",
       verified: true,
-      available: "Available in 2h"
+      available: "Available in 2h",
+      location: "Santa Ana, CA"
     },
     {
       id: 2,
@@ -54,7 +45,8 @@ export default function EmergencyPage() {
       title: "Cyber-Fraud Attorney",
       specialty: "Asset Recovery & Identity Theft",
       verified: true,
-      available: "Accepting new clients"
+      available: "Accepting new clients",
+      location: "Los Angeles, CA"
     },
     {
       id: 3,
@@ -62,7 +54,8 @@ export default function EmergencyPage() {
       title: "Digital Security Specialist",
       specialty: "Account Recovery & 2FA Setup",
       verified: true,
-      available: "Available immediately"
+      available: "Available immediately",
+      location: "Santa Ana, CA"
     },
     {
       id: 4,
@@ -70,9 +63,18 @@ export default function EmergencyPage() {
       title: "Fraud Litigation Attorney",
       specialty: "Financial Fraud Lawsuits",
       verified: true,
-      available: "Consultations opening tomorrow"
+      available: "Consultations opening tomorrow",
+      location: "Los Angeles, CA"
     }
   ];
+
+  const filteredProfessionals = professionals.filter((pro) => {
+    const matchesNameOrSpecialty = `${pro.name} ${pro.title} ${pro.specialty}`
+      .toLowerCase()
+      .includes(professionalQuery.toLowerCase());
+    const matchesLocation = pro.location.toLowerCase().includes(location.toLowerCase());
+    return matchesNameOrSpecialty && matchesLocation;
+  });
 
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto bg-[#020408] p-4 md:p-8">
@@ -109,8 +111,7 @@ export default function EmergencyPage() {
         {/* Triage Accordion Section */}
         <h3 className="text-xl font-bold text-white mb-6 border-b border-white/5 pb-2">Immediate Triage Steps</h3>
         <div className="flex flex-col gap-3 mb-16">
-          {checklist.map((item, idx) => {
-            const Icon = item.icon;
+          {scenarios.map((item, idx) => {
             const isActive = activeTab === idx;
 
             return (
@@ -148,21 +149,9 @@ export default function EmergencyPage() {
                       className="overflow-hidden"
                     >
                       <div className="p-6 pt-2 pb-6 border-t border-white/5 bg-black/10 relative">
-                        {/* Huge faint background icon */}
-                        <div className="absolute top-4 right-6 opacity-[0.03] text-white/50 pointer-events-none">
-                          <Icon size={100} />
-                        </div>
-                        
-                        <p className="text-white/60 leading-relaxed max-w-2xl text-sm mb-6 relative z-10">
-                          {item.description}
+                        <p className="text-white/70 leading-relaxed max-w-2xl text-sm relative z-10">
+                          {item.content}
                         </p>
-                        
-                        <div className="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20 relative z-10 shadow-inner">
-                          <p className="text-xs font-bold text-amber-500/70 uppercase tracking-widest mb-1.5 flex items-center gap-2">
-                            <ShieldAlert size={14} /> Critical Action
-                          </p>
-                          <p className="text-amber-100 font-medium text-sm">{item.action}</p>
-                        </div>
                       </div>
                     </motion.div>
                   )}
@@ -178,21 +167,37 @@ export default function EmergencyPage() {
             <div>
               <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
                 <Briefcase className="text-blue-500" size={24} />
-                Get Professional Help (Los Angeles Area)
+                Get Professional Help Near You
               </h3>
               <p className="text-white/50 text-sm mt-2 max-w-xl">
                 Connect with vetted cybersecurity consultants and cyber-fraud attorneys to secure your systems and recover your stolen assets.
               </p>
             </div>
-            {/* Search/Filter pill mock */}
-            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-white/50 text-sm cursor-pointer hover:bg-white/10 transition-colors w-fit">
-              <Search size={16} />
-              Filter professionals
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2 rounded-full text-sm w-full sm:w-[220px]">
+                <MapPin size={16} className="text-white/45" />
+                <input
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Location"
+                  className="bg-transparent outline-none text-white/80 placeholder:text-white/40 w-full"
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2 rounded-full text-sm w-full sm:w-[220px]">
+                <Search size={16} className="text-white/45" />
+                <input
+                  value={professionalQuery}
+                  onChange={(e) => setProfessionalQuery(e.target.value)}
+                  placeholder="Filter professionals"
+                  className="bg-transparent outline-none text-white/80 placeholder:text-white/40 w-full"
+                />
+              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {professionals.map((pro) => (
+            {filteredProfessionals.map((pro) => (
               <motion.div 
                 key={pro.id}
                 initial={{ opacity: 0, scale: 0.98 }}
@@ -215,6 +220,7 @@ export default function EmergencyPage() {
                     </h4>
                     <span className="text-blue-400 text-sm font-medium block mb-1">{pro.title}</span>
                     <span className="text-white/40 text-xs block truncate w-48 sm:w-auto">{pro.specialty}</span>
+                    <span className="text-white/50 text-xs mt-1 block">📍 {pro.location}</span>
                   </div>
                 </div>
 
@@ -235,6 +241,12 @@ export default function EmergencyPage() {
               </motion.div>
             ))}
           </div>
+
+          {filteredProfessionals.length === 0 && (
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-5 text-sm text-white/60">
+              No professionals found for this query and location. Try broadening your location (e.g., "CA") or removing filters.
+            </div>
+          )}
         </div>
 
         {/* Footer Legal Disclaimer */}
